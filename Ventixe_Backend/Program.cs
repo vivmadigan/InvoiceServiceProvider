@@ -1,21 +1,24 @@
+using Microsoft.EntityFrameworkCore;
+using Ventixe_Backend.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+
 
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+
 builder.Services.AddOpenApi();
+builder.Services.AddDbContext<DataContext>(x =>
+    x.UseSqlServer(builder.Configuration.GetConnectionString("LocalDB")));
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-}
 
+
+app.MapOpenApi();
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

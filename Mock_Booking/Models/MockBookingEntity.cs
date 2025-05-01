@@ -1,8 +1,13 @@
-﻿namespace Mock_Booking.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Mock_Booking.Models
 {
     public class MockBookingEntity
     {
-        public string BookingId { get; set; } = null!;
+        [Key]
+        [Required]
+        public string BookingId { get; set; } = Guid.NewGuid().ToString();
+        [Required]
         public string UserId { get; set; } = null!;
 
         // Snapshot of who’s booking
@@ -12,6 +17,7 @@
         public string UserPhone { get; set; } = null!;
 
         // Snapshot of the event
+        [Required]
         public string EventId { get; set; } = null!;
         public string EventName { get; set; } = null!;
         public DateTime EventDate { get; set; }  // new: when the event actually occurs
