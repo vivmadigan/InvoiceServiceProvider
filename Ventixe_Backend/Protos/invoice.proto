@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+option csharp_namespace = "Ventixe_Backend.Protos";
+
+package invoice;
+
+service InvoiceContract{
+	rpc CreateInvoiceContract (InvoiceCreationRequest) returns (InvoiceCreationResponse);
+}
+
+message InvoiceItem {
+	string ticketCategory = 1;   
+	double price          = 2;   
+	int32  quantity       = 3;   
+}
+
+message InvoiceCreationRequest {
+	string bookingId =  1;
+	string userId    =  2;
+
+	// User snapshot
+	string userName    =  3;
+	string userEmail   =  4;
+	string userAddress =  5;
+	string userPhone   =  6;
+
+	// Event snapshot
+	string eventId       =  7;
+	string eventName     =  8;
+	string eventOwnerName    =  9;
+	string eventOwnerEmail   = 10;
+	string eventOwnerAddress = 11;
+	string eventOwnerPhone   = 12;
+
+	bool   invoicePaid = 13;  
+	
+	// The lines
+	repeated InvoiceItem items = 14;
+}
+
+// What you send back
+message InvoiceCreationResponse {
+	bool   success   = 1;
+	string message     = 2;  
+}
+

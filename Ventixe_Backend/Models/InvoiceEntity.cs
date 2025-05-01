@@ -18,8 +18,8 @@ namespace Ventixe_Backend.Models
         public string UserName { get; set; } = null!; // snapshot
         [Required]
         public string UserEmail { get; set; } = null!; // snapshot
-        public string UserAddress { get; set; } = null!;  // snapshot
-        public string UserPhone { get; set; } = null!;  // snapshot
+        public string? UserAddress { get; set; }  // snapshot
+        public string? UserPhone { get; set; }  // snapshot
 
         [Required]
         public string EventId { get; set; } = null!;
