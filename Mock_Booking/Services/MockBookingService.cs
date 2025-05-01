@@ -95,13 +95,8 @@ namespace Mock_Booking.Services
 
             if (!invoiceResponse.Success)
             {
-                // Handle failure (log, throw, etc.)
                 return false;
             }
-
-            // 4) Optionally, store the returned InvoiceId on your booking:
-            // booking.InvoiceId = invoiceResponse.InvoiceId;
-            // await _mockDataContext.SaveChangesAsync();
 
             return true;
         }

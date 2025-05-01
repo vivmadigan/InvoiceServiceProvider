@@ -30,6 +30,5 @@ namespace Mock_Booking.Controllers
 
         }
 
-      
     }
 }
