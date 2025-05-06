@@ -5,6 +5,7 @@ using Ventixe_Backend.Protos;
 
 namespace Ventixe_Backend.Services
 {
+    // THIS WORKS
     public class InvoiceService(DataContext dataContext) : InvoiceContract.InvoiceContractBase
     {
         private readonly DataContext _dataContext = dataContext;

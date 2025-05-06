@@ -48,6 +48,18 @@ namespace Ventixe_Backend.Models
         public decimal Fee { get; set; }
         public decimal Total { get; set; }
 
+        // Fields for tracking updates and "deletion" of a invoice entity
+
+        public bool ManuallyAdjusted { get; set; } = false;
+        public string? AdjustedBy { get; set; }
+        public DateTime? AdjustedDate { get; set; }
+        public string? AdjustmentReason { get; set; }
+
+        public bool IsDeleted { get; set; } = false;
+        public string? DeletionReason { get; set; }
+        public DateTime? DeletedAt { get; set; }
+        public string? DeletedBy { get; set; }
+
         public ICollection<InvoiceItemEntity> InvoiceItems { get; set; }
             = new List<InvoiceItemEntity>();
 
