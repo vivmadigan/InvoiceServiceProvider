@@ -361,3 +361,7 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/Ventixe_Backend/appsettings.json
+/Ventixe_Backend/appsettings.Development.json
+/Mock_Booking/appsettings.json
+/Mock_Booking/appsettings.Development.json
