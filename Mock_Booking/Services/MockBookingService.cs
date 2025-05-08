@@ -2,20 +2,26 @@
 using Mock_Booking.Models;
 using Mock_Booking.Protos;
 using Mock_Booking.Data;
+using Mock_Booking.Dtos;
+using Azure.Messaging.ServiceBus;
+using System.Text.Json;
 
 namespace Mock_Booking.Services
 {
     public class MockBookingService
     {
         private readonly MockDataContext _mockDataContext;
-        private readonly InvoiceContract.InvoiceContractClient _invoiceClient;
+        private readonly string _queueName = "create-invoice-entity";
+        private readonly ServiceBusClient _busClient;
 
         public MockBookingService(
             MockDataContext mockDataContext,
-            InvoiceContract.InvoiceContractClient invoiceClient)
+            ServiceBusClient busClient
+            )
         {
             _mockDataContext = mockDataContext;
-            _invoiceClient = invoiceClient;
+            _busClient = busClient;
+
         }
 
         public async Task<bool> CreateBookingAsync(BookingFormModel form)
@@ -63,7 +69,7 @@ namespace Mock_Booking.Services
             }
 
             // 2) Build the InvoiceCreationRequest
-            var invoiceRequest = new InvoiceCreationRequest
+            var invoiceMsg = new InvoiceMessageDto
             {
                 BookingId = booking.BookingId,
                 UserId = booking.UserId,
@@ -77,26 +83,30 @@ namespace Mock_Booking.Services
                 EventOwnerEmail = booking.EventOwnerEmail,
                 EventOwnerAddress = booking.EventOwnerAddress,
                 EventOwnerPhone = booking.EventOwnerPhone,
-                InvoicePaid = booking.Paid
+                InvoicePaid = booking.Paid,
+                Items = booking.Items
+                    .Select(i => new InvoiceItemDto
+                    {
+                        TicketCategory = i.TicketCategory,
+                        Price = i.Price,
+                        Quantity = i.Quantity
+                    })
+                    .ToList()
             };
-            foreach (var bi in booking.Items)
-            {
-                invoiceRequest.Items.Add(new InvoiceItem
-                {
-                    TicketCategory = bi.TicketCategory,
-                    Price = (double)bi.Price,
-                    Quantity = bi.Quantity
-                });
-            }
 
-            // 3) Send to Invoice service
-            var invoiceResponse = await _invoiceClient
-                .CreateInvoiceContractAsync(invoiceRequest);
 
-            if (!invoiceResponse.Success)
-            {
-                return false;
-            }
+                
+            // 2) Serialize & send
+
+            var sender = _busClient.CreateSender(_queueName);
+
+
+            var jsonBody = JsonSerializer.Serialize(invoiceMsg);
+            var busMessage = new ServiceBusMessage(jsonBody);
+
+            await sender.SendMessageAsync(busMessage);
+            await sender.DisposeAsync();
+
 
             return true;
         }
